@@ -1,4 +1,4 @@
-package com.premtimf.androidweatherapp.Model;
+package com.premtimf.androidweatherapp.model;
 
 public class Wind {
 

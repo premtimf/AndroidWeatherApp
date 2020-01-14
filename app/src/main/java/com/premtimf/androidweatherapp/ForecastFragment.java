@@ -12,15 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.premtimf.androidweatherapp.Adapter.WeatherForecastAdapter;
-import com.premtimf.androidweatherapp.Common.Common;
-import com.premtimf.androidweatherapp.Model.WeatherForecastResult;
-import com.premtimf.androidweatherapp.Retrofit.IOpenWeatherMap;
-import com.premtimf.androidweatherapp.Retrofit.RetrofitClient;
+import com.premtimf.androidweatherapp.adapter.WeatherForecastAdapter;
+import com.premtimf.androidweatherapp.common.Common;
+import com.premtimf.androidweatherapp.model.WeatherForecastResult;
+import com.premtimf.androidweatherapp.retrofit.IOpenWeatherMap;
+import com.premtimf.androidweatherapp.retrofit.RetrofitClient;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -108,6 +106,18 @@ public class ForecastFragment extends Fragment {
         WeatherForecastAdapter weatherForecastAdapter = new WeatherForecastAdapter(getContext(), weatherForecastResult);
         mRecyclerForecast.setAdapter(weatherForecastAdapter);
 
+    }
+
+    @Override
+    public void onDestroy() {
+        mCompositeDisposable.clear();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        mCompositeDisposable.clear();
+        super.onStop();
     }
 
 }

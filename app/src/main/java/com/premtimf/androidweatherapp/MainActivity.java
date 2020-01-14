@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.room.Database;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -12,7 +13,6 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 
-import com.google.android.gms.common.wrappers.PackageManagerWrapper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -25,12 +25,16 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.premtimf.androidweatherapp.Adapter.ViewPagerAdapter;
-import com.premtimf.androidweatherapp.Common.Common;
+import com.premtimf.androidweatherapp.adapter.ViewPagerAdapter;
+import com.premtimf.androidweatherapp.common.Common;
+import com.premtimf.androidweatherapp.model.CityDb;
+import com.premtimf.androidweatherapp.persistence.CityDatabase;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private Database mDatabase;
 
     private androidx.appcompat.widget.Toolbar toolbar;
     private TabLayout tabLayout;
@@ -109,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(TodayWeatherFragment.getInstance(), "Today");
         adapter.addFragment(ForecastFragment.getInstance(), "Forecast");
+        adapter.addFragment(CityFragment.getInstance(), "Search");
         viewPager.setAdapter(adapter);
 
     }

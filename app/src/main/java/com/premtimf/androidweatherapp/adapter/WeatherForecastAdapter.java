@@ -1,4 +1,4 @@
-package com.premtimf.androidweatherapp.Adapter;
+package com.premtimf.androidweatherapp.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,10 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.premtimf.androidweatherapp.Common.Common;
-import com.premtimf.androidweatherapp.Model.WeatherForecastResult;
+import com.premtimf.androidweatherapp.common.Common;
+import com.premtimf.androidweatherapp.model.MyList;
+import com.premtimf.androidweatherapp.model.WeatherForecastResult;
 import com.premtimf.androidweatherapp.R;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecastAdapter.MyViewHolder> {
 
@@ -37,22 +40,24 @@ public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecast
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
+        List<MyList> list = weatherForecastResult.list;
+
         //Load icon
         Picasso.get().load(new StringBuilder("https://openweathermap.org/img/wn/")
-                .append(weatherForecastResult.list.get(position).weather.get(0).getIcon())
+                .append(list.get(position).weather.get(0).getIcon())
                 .append(".png").toString()).into(holder.mImageWeather);
 
         //Load data
 
         weatherDesc = new StringBuilder("")
-                .append(weatherForecastResult.list.
+                .append(list.
                         get(position).weather.get(0).getDescription()).toString();
         weatherDesc = weatherDesc.substring(0,1).toUpperCase() + weatherDesc.substring(1);
         holder.mTxtDescription.setText(weatherDesc);
-        holder.mTxtTemperature.setText(new StringBuilder(String.valueOf((int)weatherForecastResult.list
+        holder.mTxtTemperature.setText(new StringBuilder(String.valueOf((int)list
                 .get(position).main.getTemp()))
                 .append("°C").toString());
-        holder.mTxtDateTime.setText(Common.converUnixToDate(weatherForecastResult.list.get(position).dt ));
+        holder.mTxtDateTime.setText(Common.converUnixToDate(list.get(position).dt ));
 
     }
 

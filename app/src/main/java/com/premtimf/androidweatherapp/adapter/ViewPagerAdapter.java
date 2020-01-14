@@ -1,4 +1,4 @@
-package com.premtimf.androidweatherapp.Adapter;
+package com.premtimf.androidweatherapp.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

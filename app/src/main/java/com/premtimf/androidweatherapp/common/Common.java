@@ -1,4 +1,4 @@
-package com.premtimf.androidweatherapp.Common;
+package com.premtimf.androidweatherapp.common;
 
 import android.location.Location;
 
