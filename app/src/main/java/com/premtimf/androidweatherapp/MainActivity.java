@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.room.Database;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
@@ -20,21 +19,29 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.label305.asynctask.SimpleAsyncTask;
 import com.premtimf.androidweatherapp.adapter.ViewPagerAdapter;
 import com.premtimf.androidweatherapp.common.Common;
-import com.premtimf.androidweatherapp.model.CityDb;
-import com.premtimf.androidweatherapp.persistence.CityDatabase;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Database mDatabase;
+    private List<String> listCities;
+    private int cityRows;
 
     private androidx.appcompat.widget.Toolbar toolbar;
     private TabLayout tabLayout;
@@ -86,6 +93,38 @@ public class MainActivity extends AppCompatActivity {
                                 .show();
                     }
                 }).check();
+
+        new LoadCities().execute();
+
+    }
+
+    public class LoadCities extends SimpleAsyncTask<List<String>> {
+        @Override
+        protected List<String> doInBackgroundSimple() {
+            listCities = new ArrayList<>();
+            try {
+                StringBuilder stringBuilder = new StringBuilder();
+                InputStream inputStream = getResources().openRawResource(R.raw.city_list);
+                GZIPInputStream gzipInputStream = new GZIPInputStream(inputStream);
+
+                InputStreamReader inputStreamReader = new InputStreamReader(gzipInputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                String readed;
+                while ((readed = bufferedReader.readLine()) != null) {
+                    stringBuilder.append(readed);
+//                    System.out.println("-----" + readed);
+                }
+
+                listCities = new Gson().fromJson(stringBuilder.toString(), new TypeToken<List<String>>() {
+                }.getType());
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return listCities;
+        }
     }
 
     private void buildLocationCallback() {
@@ -113,7 +152,6 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(TodayWeatherFragment.getInstance(), "Today");
         adapter.addFragment(ForecastFragment.getInstance(), "Forecast");
-        adapter.addFragment(CityFragment.getInstance(), "Search");
         viewPager.setAdapter(adapter);
 
     }
@@ -127,4 +165,5 @@ public class MainActivity extends AppCompatActivity {
         locationRequest.setSmallestDisplacement(10.0f);
 
     }
+
 }

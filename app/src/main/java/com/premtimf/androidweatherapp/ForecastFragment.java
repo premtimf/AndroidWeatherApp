@@ -33,7 +33,7 @@ import retrofit2.Retrofit;
 public class ForecastFragment extends Fragment {
 
     ImageView mImgWeather;
-    TextView mTextCityName, mTextTemperature, mTextDescription, mTextDateTime, mTextWind, mTextHumidity, mTextPressure, mTextSunrise, mTextSunset, mTextGeoCoords;
+    TextView mTextCityName, mTextGeoCoords;
     RecyclerView mRecyclerForecast;
 
     CompositeDisposable mCompositeDisposable;
@@ -67,7 +67,7 @@ public class ForecastFragment extends Fragment {
 
         mRecyclerForecast = (RecyclerView) itemView.findViewById(R.id.recycler_forecast);
         mRecyclerForecast.setHasFixedSize(true);
-        mRecyclerForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        mRecyclerForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         
         getForecastWeatherInformation();
 

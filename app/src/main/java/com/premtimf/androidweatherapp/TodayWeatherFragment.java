@@ -32,6 +32,8 @@ import retrofit2.Retrofit;
  */
 public class TodayWeatherFragment extends Fragment {
 
+
+
     ImageView mImgWeather;
     TextView mTextCityName, mTextTemperature, mTextDescription, mTextDateTime, mTextWind, mTextHumidity, mTextPressure, mTextSunrise, mTextSunset, mTextGeoCoords;
     LinearLayout mWeatherPanel;
@@ -81,6 +83,7 @@ public class TodayWeatherFragment extends Fragment {
         mLoading = (ProgressBar) itemView.findViewById(R.id.loading);
 
         getWeatherInformation();
+
 
 
         return itemView;
