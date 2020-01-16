@@ -18,12 +18,14 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecastAdapter.MyViewHolder> {
 
-    Context context;
-    WeatherForecastResult weatherForecastResult;
+    private Context context;
+    private WeatherForecastResult weatherForecastResult;
 
-    String weatherDesc;
 
     public WeatherForecastAdapter(Context context, WeatherForecastResult weatherForecastResult) {
         this.context = context;
@@ -40,6 +42,7 @@ public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecast
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
+        String weatherDesc;
         List<MyList> list = weatherForecastResult.list;
 
         //Load icon
@@ -68,15 +71,15 @@ public class WeatherForecastAdapter extends RecyclerView.Adapter<WeatherForecast
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView mTxtDateTime, mTxtDescription, mTxtTemperature;
-        ImageView mImageWeather;
-        public MyViewHolder(@NonNull View itemView) {
+        @BindView(R.id.txt_date) TextView mTxtDateTime;
+        @BindView(R.id.txt_description) TextView mTxtDescription;
+        @BindView(R.id.txt_temperature) TextView mTxtTemperature;
+        @BindView(R.id.img_weather) ImageView mImageWeather;
+
+        private MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            mImageWeather = (ImageView) itemView.findViewById(R.id.img_weather);
-            mTxtDateTime = (TextView) itemView.findViewById(R.id.txt_date);
-            mTxtDescription = (TextView) itemView.findViewById(R.id.txt_description);
-            mTxtTemperature = (TextView) itemView.findViewById(R.id.txt_temperature);
+            ButterKnife.bind(this, itemView);
 
         }
     }

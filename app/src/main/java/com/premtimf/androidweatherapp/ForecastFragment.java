@@ -20,6 +20,8 @@ import com.premtimf.androidweatherapp.model.WeatherForecastResult;
 import com.premtimf.androidweatherapp.retrofit.IOpenWeatherMap;
 import com.premtimf.androidweatherapp.retrofit.RetrofitClient;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -32,12 +34,12 @@ import retrofit2.Retrofit;
  */
 public class ForecastFragment extends Fragment {
 
-    ImageView mImgWeather;
-    TextView mTextCityName, mTextGeoCoords;
-    RecyclerView mRecyclerForecast;
+    @BindView(R.id.txt_city_name) TextView mTextCityName;
+    @BindView(R.id.txt_geo_coords) TextView mTextGeoCoords;
+    @BindView(R.id.recycler_forecast) RecyclerView mRecyclerForecast;
 
-    CompositeDisposable mCompositeDisposable;
-    IOpenWeatherMap mService;
+    private CompositeDisposable mCompositeDisposable;
+    private IOpenWeatherMap mService;
 
     static ForecastFragment instance;
 
@@ -61,15 +63,14 @@ public class ForecastFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View itemView = inflater.inflate(R.layout.fragment_forecast, container, false);
+        ButterKnife.bind(this, itemView);
 
-        mTextCityName = (TextView) itemView.findViewById(R.id.txt_city_name);
-        mTextGeoCoords = (TextView) itemView.findViewById(R.id.txt_geo_coords);
-
-        mRecyclerForecast = (RecyclerView) itemView.findViewById(R.id.recycler_forecast);
         mRecyclerForecast.setHasFixedSize(true);
         mRecyclerForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        
+
+
         getForecastWeatherInformation();
+
 
         return itemView;
     }
