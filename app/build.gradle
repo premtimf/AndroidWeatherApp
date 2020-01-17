@@ -15,7 +15,7 @@ android {
     }
 
     //compile options to use java 8
-    compileOptions{
+    compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -74,11 +74,33 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
 
     //butterknife
     implementation 'com.jakewharton:butterknife:10.2.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
+    //lifecycle
+    def lifecycle_version = "2.1.0"
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    //mosby
+    implementation 'com.hannesdorfmann.mosby3:mvi:3.1.1' // Model-View-Intent
+    // or
+    implementation 'com.hannesdorfmann.mosby3:mvp:3.1.1' // Plain MVP
+    // or
+    implementation 'com.hannesdorfmann.mosby3:viewstate:3.1.1' // MVP + ViewState support
+
+    // MVP + ViewState + LCE Views
+    implementation 'com.hannesdorfmann.mosby3:mvp-lce:3.1.1'
+
+    // Null Object Presenter for MVP
+    implementation 'com.hannesdorfmann.mosby3:mvp-nullobject-presenter:3.1.1'
+
+    // Queuing Presenter for MVP
+    implementation 'com.hannesdorfmann.mosby3:mvp-queuing-presenter:3.1.1'
 
 }
 repositories {

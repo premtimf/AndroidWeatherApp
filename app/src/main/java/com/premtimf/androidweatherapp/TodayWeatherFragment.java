@@ -2,9 +2,6 @@ package com.premtimf.androidweatherapp;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.premtimf.androidweatherapp.common.Common;
 import com.premtimf.androidweatherapp.model.WeatherResult;
@@ -33,25 +32,13 @@ import retrofit2.Retrofit;
 public class TodayWeatherFragment extends Fragment {
 
 
-
+    static TodayWeatherFragment instance;
     ImageView mImgWeather;
     TextView mTextCityName, mTextTemperature, mTextDescription, mTextDateTime, mTextWind, mTextHumidity, mTextPressure, mTextSunrise, mTextSunset, mTextGeoCoords;
     LinearLayout mWeatherPanel;
     ProgressBar mLoading;
-
     CompositeDisposable mCompositeDisposable;
     IOpenWeatherMap mService;
-
-    static TodayWeatherFragment instance;
-
-    public static TodayWeatherFragment getInstance(){
-        if (instance == null)
-
-            instance = new TodayWeatherFragment();
-
-            return instance;
-    }
-
 
     public TodayWeatherFragment() {
         mCompositeDisposable = new CompositeDisposable();
@@ -60,6 +47,13 @@ public class TodayWeatherFragment extends Fragment {
 
     }
 
+    public static TodayWeatherFragment getInstance() {
+        if (instance == null)
+
+            instance = new TodayWeatherFragment();
+
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,7 +79,6 @@ public class TodayWeatherFragment extends Fragment {
         getWeatherInformation();
 
 
-
         return itemView;
     }
 
@@ -100,16 +93,16 @@ public class TodayWeatherFragment extends Fragment {
                     public void accept(WeatherResult weatherResult) throws Exception {
                         //load image
                         Picasso.get().load(new StringBuilder("https://openweathermap.org/img/wn/")
-                        .append(weatherResult.getWeather().get(0).getIcon())
-                        .append(".png").toString()).into(mImgWeather);
+                                .append(weatherResult.getWeather().get(0).getIcon())
+                                .append(".png").toString()).into(mImgWeather);
 
                         //load info
                         mTextCityName.setText(weatherResult.getName());
                         mTextDescription.setText(new StringBuilder("Weather in ")
                                 .append(weatherResult.getName()).toString());
-                        mTextTemperature.setText(new StringBuilder(String.valueOf((int)weatherResult.getMain().getTemp()))
+                        mTextTemperature.setText(new StringBuilder(String.valueOf((int) weatherResult.getMain().getTemp()))
                                 .append("°C").toString());
-                        mTextDateTime.setText(Common.converUnixToDate(weatherResult.getDt()));
+                        mTextDateTime.setText(Common.convertUnixDate(weatherResult.getDt()));
                         mTextPressure.setText(new StringBuilder(String.valueOf(weatherResult.getMain().getPressure()))
                                 .append(" hpa").toString());
                         mTextWind.setText(new StringBuilder("Speed: ")
@@ -117,21 +110,21 @@ public class TodayWeatherFragment extends Fragment {
                                 .append(" Deg: ").append(weatherResult.getWind().getDeg()).toString());
                         mTextHumidity.setText(new StringBuilder(String.valueOf(weatherResult.getMain().getHumidity()))
                                 .append(" %").toString());
-                        mTextSunrise.setText(Common.converUnixToHour(weatherResult.getSys().getSunrise()));
-                        mTextSunset.setText(Common.converUnixToHour(weatherResult.getSys().getSunset()));
+                        mTextSunrise.setText(Common.convertUnixHours(weatherResult.getSys().getSunrise()));
+                        mTextSunset.setText(Common.convertUnixHours(weatherResult.getSys().getSunset()));
                         mTextGeoCoords.setText(new StringBuilder(weatherResult.getCoord().toString()).toString());
 
                         //Display panel
                         mWeatherPanel.setVisibility(View.VISIBLE);
                         mLoading.setVisibility(View.GONE);
 
-                        
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
 
-                        Toast.makeText(getActivity(), ""+throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
                 }));

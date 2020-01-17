@@ -2,17 +2,15 @@ package com.premtimf.androidweatherapp;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.premtimf.androidweatherapp.adapter.WeatherForecastAdapter;
 import com.premtimf.androidweatherapp.common.Common;
@@ -34,21 +32,15 @@ import retrofit2.Retrofit;
  */
 public class ForecastFragment extends Fragment {
 
-    @BindView(R.id.txt_city_name) TextView mTextCityName;
-    @BindView(R.id.txt_geo_coords) TextView mTextGeoCoords;
-    @BindView(R.id.recycler_forecast) RecyclerView mRecyclerForecast;
-
+    static ForecastFragment instance;
+    @BindView(R.id.txt_city_name)
+    TextView mTextCityName;
+    @BindView(R.id.txt_geo_coords)
+    TextView mTextGeoCoords;
+    @BindView(R.id.recycler_forecast)
+    RecyclerView mRecyclerForecast;
     private CompositeDisposable mCompositeDisposable;
     private IOpenWeatherMap mService;
-
-    static ForecastFragment instance;
-
-    public static ForecastFragment getInstance() {
-
-        if (instance == null)
-            instance = new ForecastFragment();
-        return instance;
-    }
 
     public ForecastFragment() {
         mCompositeDisposable = new CompositeDisposable();
@@ -56,6 +48,11 @@ public class ForecastFragment extends Fragment {
         mService = retrofit.create(IOpenWeatherMap.class);
     }
 
+    public static ForecastFragment getInstance() {
+        if (instance == null)
+            instance = new ForecastFragment();
+        return instance;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -69,6 +66,7 @@ public class ForecastFragment extends Fragment {
         mRecyclerForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
 
+        mRecyclerForecast.setAdapter(null);
         getForecastWeatherInformation();
 
 
@@ -93,11 +91,12 @@ public class ForecastFragment extends Fragment {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        Log.d("ERROR", ""+throwable.getMessage());
+                        Log.d("ERROR", "" + throwable.getMessage());
                     }
                 })
         );
     }
+
 
     private void displayForecastWeather(WeatherForecastResult weatherForecastResult) {
 
