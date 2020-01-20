@@ -2,112 +2,116 @@ package com.premtimf.androidweatherapp;
 
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.premtimf.androidweatherapp.Adapter.WeatherForecastAdapter;
-import com.premtimf.androidweatherapp.Common.Common;
-import com.premtimf.androidweatherapp.Model.WeatherForecastResult;
-import com.premtimf.androidweatherapp.Retrofit.IOpenWeatherMap;
-import com.premtimf.androidweatherapp.Retrofit.RetrofitClient;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Retrofit;
+import com.hannesdorfmann.mosby3.mvp.lce.MvpLceFragment;
+import com.premtimf.androidweatherapp.adapter.WeatherForecastAdapter;
+import com.premtimf.androidweatherapp.model.WeatherForecastResult;
+import com.premtimf.androidweatherapp.presenter.ForecastPresenter;
+
+import com.premtimf.androidweatherapp.view.ForecastView;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ForecastFragment extends Fragment {
+public class ForecastFragment extends MvpLceFragment<SwipeRefreshLayout, WeatherForecastResult, ForecastView, ForecastPresenter>
+        implements ForecastView, SwipeRefreshLayout.OnRefreshListener {
 
-    ImageView mImgWeather;
-    TextView mTextCityName, mTextTemperature, mTextDescription, mTextDateTime, mTextWind, mTextHumidity, mTextPressure, mTextSunrise, mTextSunset, mTextGeoCoords;
+    @BindView(R.id.txt_city_name)
+    TextView mTextCityName;
+    @BindView(R.id.txt_geo_coords)
+    TextView mTextGeoCoords;
+    @BindView(R.id.recycler_forecast)
     RecyclerView mRecyclerForecast;
-
-    CompositeDisposable mCompositeDisposable;
-    IOpenWeatherMap mService;
-
-    static ForecastFragment instance;
-
-    public static ForecastFragment getInstance() {
-
-        if (instance == null)
-            instance = new ForecastFragment();
-        return instance;
-    }
-
-    public ForecastFragment() {
-        mCompositeDisposable = new CompositeDisposable();
-        Retrofit retrofit = RetrofitClient.getInstance();
-        mService = retrofit.create(IOpenWeatherMap.class);
-    }
+    WeatherForecastAdapter mWeatherForecastAdapter;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View itemView = inflater.inflate(R.layout.fragment_forecast, container, false);
-
-        mTextCityName = (TextView) itemView.findViewById(R.id.txt_city_name);
-        mTextGeoCoords = (TextView) itemView.findViewById(R.id.txt_geo_coords);
-
-        mRecyclerForecast = (RecyclerView) itemView.findViewById(R.id.recycler_forecast);
-        mRecyclerForecast.setHasFixedSize(true);
-        mRecyclerForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        
-        getForecastWeatherInformation();
 
         return itemView;
     }
 
-    private void getForecastWeatherInformation() {
-        mCompositeDisposable.add(mService.getForecastByLatLng(
-                String.valueOf(Common.current_location.getLatitude()),
-                String.valueOf(Common.current_location.getLongitude()),
-                Common.APP_ID,
-                "metric")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<WeatherForecastResult>() {
-                    @Override
-                    public void accept(WeatherForecastResult weatherForecastResult) throws Exception {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
 
-                        displayForecastWeather(weatherForecastResult);
+        mRecyclerForecast.setHasFixedSize(true);
+        mRecyclerForecast.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
 
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Log.d("ERROR", ""+throwable.getMessage());
-                    }
-                })
-        );
+        loadData(false);
+        contentView.setOnRefreshListener(this);
+
     }
 
-    private void displayForecastWeather(WeatherForecastResult weatherForecastResult) {
+    @Override
+    public ForecastPresenter createPresenter() {
+        return new ForecastPresenter();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onRefresh() {
+        loadData(true);
+    }
+
+    @Override
+    protected String getErrorMessage(Throwable e, boolean pullToRefresh) {
+        return null;
+    }
+
+    @Override
+    public void setData(WeatherForecastResult weatherForecastResult) {
 
         mTextCityName.setText(new StringBuilder(weatherForecastResult.city.name));
         mTextGeoCoords.setText(new StringBuilder(weatherForecastResult.city.coord.toString()));
 
-        WeatherForecastAdapter weatherForecastAdapter = new WeatherForecastAdapter(getContext(), weatherForecastResult);
-        mRecyclerForecast.setAdapter(weatherForecastAdapter);
-
+        mWeatherForecastAdapter = new WeatherForecastAdapter(getContext(), weatherForecastResult);
+        mRecyclerForecast.setAdapter(mWeatherForecastAdapter);
     }
 
+    @Override
+    public void loadData(boolean pullToRefresh) {
+        presenter.initComposite();
+        presenter.getWeatherInformation(pullToRefresh);
+    }
+
+    @Override
+    public void showContent() {
+        super.showContent();
+        contentView.setRefreshing(false);
+    }
+
+    @Override
+    public void showLoading(boolean pullToRefresh) {
+        super.showLoading(pullToRefresh);
+        contentView.setRefreshing(pullToRefresh);
+    }
 }

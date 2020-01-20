@@ -1,4 +1,4 @@
-package com.premtimf.androidweatherapp.Retrofit;
+package com.premtimf.androidweatherapp.retrofit;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;

@@ -1,22 +1,38 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.premtimf.androidweatherapp"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    //compile options to use java 8
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    //compile options for kotlin to use java 8
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+
 }
 
 dependencies {
@@ -44,4 +60,49 @@ dependencies {
 
     //Picasso
     implementation 'com.squareup.picasso:picasso:2.71828'
+
+    //searchbar
+    implementation 'com.github.mancj:MaterialSearchBar:0.8.2'
+    implementation "com.label305:asynctask:1.0.0"
+
+    //kotlin
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    //room
+    def room_version = "2.2.3"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava2:$room_version"
+
+    //butterknife
+    implementation 'com.jakewharton:butterknife:10.2.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+
+    //lifecycle
+    def lifecycle_version = "2.1.0"
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    //mosby
+    implementation 'com.hannesdorfmann.mosby3:mvi:3.1.1' // Model-View-Intent
+    // or
+    implementation 'com.hannesdorfmann.mosby3:mvp:3.1.1' // Plain MVP
+    // or
+    implementation 'com.hannesdorfmann.mosby3:viewstate:3.1.1' // MVP + ViewState support
+
+    // MVP + ViewState + LCE Views
+    implementation 'com.hannesdorfmann.mosby3:mvp-lce:3.1.1'
+
+    // Null Object Presenter for MVP
+    implementation 'com.hannesdorfmann.mosby3:mvp-nullobject-presenter:3.1.1'
+
+    // Queuing Presenter for MVP
+    implementation 'com.hannesdorfmann.mosby3:mvp-queuing-presenter:3.1.1'
+
+}
+repositories {
+    mavenCentral()
 }

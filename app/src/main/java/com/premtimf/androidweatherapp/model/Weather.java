@@ -1,6 +1,6 @@
-package com.premtimf.androidweatherapp.Model;
+package com.premtimf.androidweatherapp.model;
 
-public  class Weather {
+public class Weather {
     private int id;
     private String main;
     private String description;
