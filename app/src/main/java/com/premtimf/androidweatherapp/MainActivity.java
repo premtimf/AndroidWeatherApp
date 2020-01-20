@@ -27,7 +27,6 @@ public class MainActivity extends MvpActivity<MainMvpView, MainMvpPresenter> imp
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,7 +36,6 @@ public class MainActivity extends MvpActivity<MainMvpView, MainMvpPresenter> imp
 
         setSupportActionBar(toolbar);
         presenter.loadLocationPermissionDialog(this);
-
     }
 
     @NonNull
@@ -48,11 +46,10 @@ public class MainActivity extends MvpActivity<MainMvpView, MainMvpPresenter> imp
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(TodayWeatherFragment.getInstance(), "Today");
-        adapter.addFragment(ForecastFragment.getInstance(), "Forecast");
+        adapter.addFragment(new TodayWeatherFragment(), "Today");
+        adapter.addFragment(new ForecastFragment(), "Forecast");
         viewPager.setAdapter(adapter);
     }
-
 
     @Override
     public void showLocationDenied() {
